@@ -4,6 +4,9 @@ JSONObject config;
 int tileSize;
 int[] foregroundColour;
 
+
+ArrayList<Tank> tanks;
+
 void setup() {
   // Load the JSON configuration file
   config = loadJSONObject("config.json");
@@ -81,6 +84,23 @@ void setup() {
       }
     }
   }
+  
+  // Tank Logic -------------------------------------------------
+  size(864, 640);
+  tanks = new ArrayList<Tank>();
+  
+  tanks.add(new Tank(100, 100, 100, "tank.png"));
+}
+
+void draw() {
+    background(0);
+    for (Tank tank : tanks) {
+        tank.display();
+        // Example of taking damage, you could link this to collision detection or similar logic
+        if (frameCount % 60 == 0) { // Every second, if frameRate is 60
+            tank.takeDamage(10);
+        }
+    }
 }
 
 void smoothTerrain(String[] layoutLines) {
