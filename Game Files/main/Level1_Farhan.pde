@@ -150,6 +150,7 @@ void draw() {
     tank.display();
   }
 }
+//{
 
 void smoothTerrain(String[] layoutLines) {
   // Apply moving average of 32 values twice to smooth the terrain
