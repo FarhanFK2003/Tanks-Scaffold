@@ -81,14 +81,16 @@ class Tank {
   void display() {
     // Draw lower part of tank
     fill(tankColor[0], tankColor[1], tankColor[2]);
-    rect(x - 15, y, 30, 10); // Lower part
-
+    
     // Draw upper part of tank
-    rect(x - 9, y - 18, 18, 20); // Upper part
+    rect(x+8, y+5 , 18, 20); // Upper part
+
+rect(x+2 , y+20, 30, 10); // Lower part
+
 
     // Draw turret
     pushMatrix();
-    translate(x, y - 10); // Position turret above upper part
+    translate(x+17, y + 10); // Position turret above upper part
     rotate(turretAngle);  // Rotate turret
     fill(0); // Black color for turret
     rect(5, -3, 12, 6); // Turret barrel
@@ -108,9 +110,9 @@ class Tank {
   // Method to display health above the tank
   void displayHealth() {
     fill(255, 0, 0); // Red background for health lost
-    rect(x - 20, y + 20, 40, 5);
+    rect(x - 5, y + 30, 40, 5);
     fill(0, 255, 0); // Green foreground for current health
-    rect(x - 20, y + 20, map(currentHealth, 0, maxHealth, 0, 40), 5);
+    rect(x - 5, y +30, map(currentHealth, 0, maxHealth, 0, 40), 5);
   }
 
   // Method to check if the tank is still alive
