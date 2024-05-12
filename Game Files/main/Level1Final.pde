@@ -4,6 +4,9 @@ JSONObject config;
 int tileSize;
 int[] foregroundColour;
 
+
+ArrayList<Tank> tanks;
+
 void setup() {
   // Load the JSON configuration file
   config = loadJSONObject("config.json");
