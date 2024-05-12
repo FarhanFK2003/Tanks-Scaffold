@@ -4,9 +4,6 @@
 //int tileSize;
 //int[] foregroundColour;
 
-
-//ArrayList<Tank> tanks;
-
 //void setup() {
 //  // Load the JSON configuration file
 //  config = loadJSONObject("config.json");
@@ -26,7 +23,7 @@
 //  String[] layoutLines = loadStrings(layoutFileName);
   
 //  // Load the background image
-//  backgroundImage = loadImage(backgroundFileName);
+//  backgroundImage = loadImage("snow.png");
   
 //  // Load the tree image
 //  treeImage = loadImage("tree2.png");
@@ -39,9 +36,6 @@
   
 //  // Draw the background image
 //  image(backgroundImage, 0, 0, width, height);
-  
-//  // Smooth the terrain
-//  smoothTerrain(layoutLines);
   
 //  // Display the contents of the layout file
 //  for (int i = 0; i < layoutLines.length; i++) {
@@ -84,58 +78,6 @@
 //      }
 //    }
 //  }
-  
-//  // Tank Logic -------------------------------------------------
-//  size(864, 640);
-//  tanks = new ArrayList<Tank>();
-  
-//  tanks.add(new Tank(100, 100, 100, "tank.png"));
-//}
-
-//void draw() {
-//    background(0);
-//    for (Tank tank : tanks) {
-//        tank.display();
-//        // Example of taking damage, you could link this to collision detection or similar logic
-//        if (frameCount % 60 == 0) { // Every second, if frameRate is 60
-//            tank.takeDamage(10);
-//        }
-//    }
-//}
-
-//void smoothTerrain(String[] layoutLines) {
-//  // Apply moving average of 32 values twice to smooth the terrain
-//  for (int i = 0; i < layoutLines.length; i++) {
-//    for (int j = 0; j < layoutLines[i].length(); j++) {
-//      if (layoutLines[i].charAt(j) == 'X') {
-//        int smoothValue = computeSmoothValue(layoutLines, j, i);
-//        layoutLines[i] = layoutLines[i].substring(0, j) + 'X' + layoutLines[i].substring(j + 1); // Update the terrain value
-//      }
-//    }
-//  }
-//}
-
-//int computeSmoothValue(String[] lines, int x, int y) {
-//  // Compute the moving average of neighboring values
-//  int sum = 0;
-//  int count = 0;
-  
-//  // Iterate over neighboring values in a 32x32 grid
-//  for (int i = -16; i <= 16; i++) {
-//    for (int j = -16; j <= 16; j++) {
-//      int newX = x + j;
-//      int newY = y + i;
-      
-//      // Check if the neighboring tile is within bounds and is part of the terrain
-//      if (newX >= 0 && newX < lines[0].length() && newY >= 0 && newY < lines.length && lines[newY].charAt(newX) == 'X') {
-//        sum++;
-//        count++;
-//      }
-//    }
-//  }
-  
-//  // Return the average value
-//  return count > 0 ? sum / count : 0;
 //}
 
 //int[] parseColour(String colourString) {
