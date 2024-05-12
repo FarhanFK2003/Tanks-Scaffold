@@ -85,7 +85,7 @@ class Tank {
     // Draw upper part of tank
     rect(x+8, y+5 , 18, 20); // Upper part
 
-rect(x+2 , y+20, 30, 10); // Lower part
+    rect(x+2 , y+20, 30, 10); // Lower part
 
 
     // Draw turret
