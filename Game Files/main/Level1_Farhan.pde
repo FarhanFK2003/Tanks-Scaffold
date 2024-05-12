@@ -185,7 +185,7 @@ void setup() {
 
 //void draw()
 //{
-//  tank.display();
+//  tanks[0].display();
 //}
 
 void smoothTerrain(String[] layoutLines) {
