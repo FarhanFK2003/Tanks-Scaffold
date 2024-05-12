@@ -14,6 +14,8 @@ void setup() {
   // Access the "levels" array
   JSONArray levels = config.getJSONArray("levels");
   
+  
+  
   // Load only the first level
   JSONObject firstLevel = levels.getJSONObject(0);
   
