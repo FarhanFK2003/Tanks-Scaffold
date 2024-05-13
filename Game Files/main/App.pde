@@ -4,7 +4,7 @@ JSONObject config;
 int tileSize;
 int[] foregroundColour;
 int players;
-String[] layoutLines; // Declare layoutLines as a global variable
+String[] layoutLines;
 
 Tank[] tanks;
 
@@ -12,38 +12,31 @@ int turn ;
 
 void setup() {
   turn = 0;
-  // Load the JSON configuration file
+
   config = loadJSONObject("config.json");
   
-  // Access the "levels" array
+  
   JSONArray levels = config.getJSONArray("levels");
   
-  // Load only the first level
   JSONObject firstLevel = levels.getJSONObject(0);
   
   //Hardcoding players with 5
   players = 0;
   
-  // Extract information for the first level
   String layoutFileName = firstLevel.getString("layout");
   String backgroundFileName = firstLevel.getString("background");
   foregroundColour = parseColour(firstLevel.getString("foreground-colour"));
   
   
-  // Load the content of the layout file
   layoutLines = loadStrings(layoutFileName); // Initialize layoutLines
   
-  // Load the background image
   backgroundImage = loadImage(backgroundFileName);
   
-  // Load the tree image
   treeImage = loadImage("tree2.png");
   
-  // Set up the canvas
   size(864, 640);
   
   
-  // Draw the background image
   image(backgroundImage, 0, 0, width, height);
   
   countPlayers();
@@ -53,7 +46,6 @@ void setup() {
   
   float tileSize = 32;
   
-  // Display the contents of the layout file
   for (int i = 0; i < layoutLines.length; i++) {
     String line = layoutLines[i];
     for (int j = 0; j < line.length(); j++) {
@@ -61,7 +53,6 @@ void setup() {
       float x = j * tileSize;
       float y = i * tileSize;
       
-      // Draw based on tile type
       switch(tile) {
         case 'A':
           int[] blueColor = {0, 0, 255};
@@ -90,11 +81,6 @@ void setup() {
           float treeSize = tileSize * 1.1;
           image(treeImage, x, y, treeSize, treeSize);
           break;
-        case ' ': // Ignore spaces
-          break;
-        default:
-          // Ignore any other characters
-          break;
       }
     }
   }
@@ -107,37 +93,11 @@ void setup() {
 
 void draw() {
   
-  // Clear the background
   background(0);
 
-  // Render the background image
   image(backgroundImage, 0, 0, width, height);
   showTerrain();
 
-  // Render the foreground terrain and trees
-  for (int i = 0; i < layoutLines.length; i++) {
-    String line = layoutLines[i];
-    for (int j = 0; j < line.length(); j++) {
-      char tile = line.charAt(j);
-      float x = j * tileSize;
-      float y = i * tileSize;
-
-      // Draw based on tile type
-      switch(tile) {
-        case 'T':
-          // Draw trees
-          float treeSize = tileSize * 1.1;
-          // Draw tree image with calculated size
-          image(treeImage, x, y, treeSize, treeSize);
-          break;
-        case ' ': // Ignore spaces
-          break;
-        default:
-          // Ignore any other characters
-          break;
-      }
-    }
-  }
 
   // Display tanks and their health bars
   for (int i=0; i<players ;i++) {
@@ -151,14 +111,13 @@ void draw() {
 
 void showTerrain(){
 
-  // Calculate tile size
   tileSize = 32;
   
   
   float[] xCoordinates = new float[28];
   float[] yCoordinates = new float[28];
-  int xIndex = 0; // Index for xCoordinates array
-  int yIndex = 0; // Index for yCoordinates array
+  int xIndex = 0; 
+  int yIndex = 0; 
 
 
 
@@ -173,24 +132,25 @@ void showTerrain(){
       // Draw based on tile type
       switch(tile) {
         case 'X':
-          // Store the x and y coordinates of 'X' tiles
           xCoordinates[xIndex++] = x;
           yCoordinates[yIndex++] = y;
           break;
+        case 'T':
+          float treeSize = tileSize * 1.1;
+          image(treeImage, x, y, treeSize, treeSize);
+          break;
+
       }
     }
   }  
   
-  // Bubble Sort algorithm to sort xCoordinates array and rearrange yCoordinates array accordingly
   for (int i = 0; i < xIndex - 1; i++) {
       for (int j = 0; j < xIndex - i - 1; j++) {
           if (xCoordinates[j] > xCoordinates[j + 1]) {
-              // Swap xCoordinates
               float tempX = xCoordinates[j];
               xCoordinates[j] = xCoordinates[j + 1];
               xCoordinates[j + 1] = tempX;
   
-              // Swap corresponding yCoordinates
               float tempY = yCoordinates[j];
               yCoordinates[j] = yCoordinates[j + 1];
               yCoordinates[j + 1] = tempY;
@@ -251,7 +211,6 @@ void showTerrain(){
 }
 
 void countPlayers(){
-  // Display the contents of the layout file
   for (int i = 0; i < layoutLines.length; i++) {
     String line = layoutLines[i];
     for (int j = 0; j < line.length(); j++) {
@@ -259,7 +218,6 @@ void countPlayers(){
       float x = j * tileSize;
       float y = i * tileSize;
       
-      // Draw based on tile type
       switch(tile) {
         case 'A':case'B':case'C':case'D':case'E':case'F':case'G':case'H':case'I':
           players++;
@@ -277,7 +235,6 @@ void countPlayers(){
 
 
 int[] parseColour(String colourString) {
-  // Parse the colour string to extract RGB values
   String[] rgb = split(colourString, ',');
   int[] colour = new int[3];
   for (int i = 0; i < 3; i++) {
@@ -288,10 +245,8 @@ int[] parseColour(String colourString) {
 
 
 void keyPressed() {
-  // Pass the key code to the controlTank method of each Tank object
   if(keyCode == 32)
   {
-    //Implement Shooting Here
     turn = (turn+1)%players;
   }
   tanks[turn].move(keyCode);
