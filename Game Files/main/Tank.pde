@@ -1,3 +1,4 @@
+
 //class Tank {
 //    float x, y; // Position of the tank
 //    int maxHealth;
@@ -50,7 +51,7 @@ class Tank {
   int maxHealth;
   int currentHealth;
   int id;
-
+  int fuel; // Fuel level of the tank
   Tank(float x, float y, int[] tankColor, int maxHealth, int _id) {
     this.id = _id;
     this.x = x;
@@ -60,6 +61,7 @@ class Tank {
     this.currentHealth = maxHealth;
     this.turretAngle = 3*PI/2;
     this.lastUpdateTime = millis();
+    this.fuel = 250;
   }
   
   int getId(){
@@ -82,7 +84,12 @@ class Tank {
   void controlLowerPart(float deltaY) {
     y += deltaY;
   }
-
+  // Method to display the current fuel level
+  void displayFuel() {
+    fill(255);
+    textSize(12);
+    text("Fuel: " + fuel, x - 30, y - 40); // Display fuel level near the tank
+  }
   // Method to display the tank
   void display() {
     // Draw lower part of tank
@@ -103,6 +110,7 @@ class Tank {
     popMatrix();
 
     displayHealth();
+    displayFuel(); // Display the current fuel level
   }
 
   // Method to take damage
@@ -126,24 +134,44 @@ class Tank {
     return currentHealth > 0;
   }
 
+  void fire() {
+    float turretEndX = x + 40 * cos(turretAngle); // Adjust for your turret's length
+    float turretEndY = y + 40 * sin(turretAngle);
+    float power = 10;  // Adjust power as necessary
+    projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power));
+  }
 
-  void move(int keyCode) {
+  
+void move(int keyCode) {
     float turretAngleChange = 3 * PI;
     float tankMoveSpeed = 60;
+    float fuelConsumptionPerMove = 0.5; // Amount of fuel consumed per movement action
+    float fuelConsumptionPerTurretMove = 0.2; // Amount of fuel consumed per turret movement
 
     float perFrameRate = 1/frameRate;
 
     turretAngleChange = turretAngleChange * perFrameRate;
     tankMoveSpeed = tankMoveSpeed * perFrameRate;
 
-    if (keyCode == UP) {
-      controlTurret(turretAngleChange); // Move turret up
-    } else if (keyCode == DOWN) {
-      controlTurret(-turretAngleChange); // Move turret down
-    } else if (keyCode == LEFT) {
-      x -= tankMoveSpeed ; // Move tank left
-    } else if (keyCode == RIGHT) {
-      x += tankMoveSpeed ; // Move tank right
+    if (fuel <= 0) {
+        return; // Stop movement if there's no fuel left
     }
-  }
+
+    if (keyCode == UP) {
+        controlTurret(turretAngleChange); // Move turret up
+    } else if (keyCode == DOWN) {
+        controlTurret(-turretAngleChange); // Move turret down
+    } else if (keyCode == LEFT) {
+        x -= tankMoveSpeed; // Move tank left
+        fuel -= fuelConsumptionPerMove;
+    } else if (keyCode == RIGHT) {
+        x += tankMoveSpeed; // Move tank right
+        fuel -= fuelConsumptionPerMove;
+    }
+
+    // Optionally, clamp the fuel value to ensure it doesn't go below zero
+    if (fuel < 0) {
+        fuel = 0;
+    }
+}
 }

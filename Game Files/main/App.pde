@@ -9,6 +9,8 @@ String[] layoutLines;
 Tank[] tanks;
 
 int turn ;
+ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+
 
 void setup() {
   turn = 0;
@@ -89,7 +91,17 @@ void setup() {
 }
 
 
-
+void checkCollisions() {
+    for (Projectile p : projectiles) {
+        if (!p.active) continue;
+        for (Tank t : tanks) {
+            if (dist(p.x, p.y, t.x, t.y) < 20) { // Assuming radius of impact
+                t.takeDamage(20);  // Damage the tank
+                p.active = false;  // Deactivate the projectile
+            }
+        }
+    }
+}
 
 void draw() {
   
@@ -104,7 +116,17 @@ void draw() {
     tanks[i].display();
   
   }
-  
+   for (int i = projectiles.size() - 1; i >= 0; i--) {
+        Projectile p = projectiles.get(i);
+        p.update();
+        p.display();
+        if (!p.active) {
+            projectiles.remove(i);
+        }
+    }
+
+    // Collision detection
+    checkCollisions();
 }
 
 
@@ -247,6 +269,7 @@ int[] parseColour(String colourString) {
 void keyPressed() {
   if(keyCode == 32)
   {
+    tanks[turn].fire();
     turn = (turn+1)%players;
   }
   tanks[turn].move(keyCode);
