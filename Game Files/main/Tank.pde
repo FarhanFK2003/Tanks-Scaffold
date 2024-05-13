@@ -105,28 +105,28 @@ class Tank {
     text("Fuel: " + fuel, x - 30, y - 40); // Display fuel level near the tank
   }
   // Method to display the tank
+  // Method to display the tank
   void display() {
-    // Draw lower part of tank
-    fill(tankColor[0], tankColor[1], tankColor[2]);
-    
-    // Draw upper part of tank
-    rect(x+8, y+5 , 18, 20); // Upper part
-
-    rect(x+2 , y+20, 30, 10); // Lower part
-
-
-    // Draw turret
-    pushMatrix();
-    translate(x+17, y + 10); // Position turret above upper part
-    rotate(turretAngle);  // Rotate turret
-    fill(0); // Black color for turret
-    rect(5, -3, 12, 6); // Turret barrel
-    popMatrix();
-
-    displayHealth();
-    displayFuel(); // Display the current fuel level
-    displayScore();
+      if (currentHealth > 0) { // Only display the tank if it is alive
+          // Draw lower part of tank
+          fill(tankColor[0], tankColor[1], tankColor[2]);
+          rect(x+8, y+5 , 18, 20); // Upper part
+          rect(x+2 , y+20, 30, 10); // Lower part
+  
+          // Draw turret
+          pushMatrix();
+          translate(x+17, y + 10); // Position turret above upper part
+          rotate(turretAngle);  // Rotate turret
+          fill(0); // Black color for turret
+          rect(5, -3, 12, 6); // Turret barrel
+          popMatrix();
+  
+          displayHealth();
+          displayFuel(); // Display the current fuel level
+          displayScore(); // Display the score
+      }
   }
+
 
   // Method to take damage
   void takeDamage(int damage) {
