@@ -52,6 +52,8 @@ class Tank {
   int currentHealth;
   int id;
   int fuel; // Fuel level of the tank
+  int score; // Score of the tank
+  
   Tank(float x, float y, int[] tankColor, int maxHealth, int _id) {
     this.id = _id;
     this.x = x;
@@ -62,10 +64,22 @@ class Tank {
     this.turretAngle = 3*PI/2;
     this.lastUpdateTime = millis();
     this.fuel = 250;
+    this.score = 0; // Initialize score to 0
   }
   
   int getId(){
     return id;
+  }
+  // Increment score
+  void incrementScore() {
+    score++;
+  }
+
+  // Method to display the score
+  void displayScore() {
+    textSize(12);
+    fill(255);
+    text("Score: " + score, x, y - 20); // Adjust position as needed
   }
 
   // Method to control turret movement
@@ -111,6 +125,7 @@ class Tank {
 
     displayHealth();
     displayFuel(); // Display the current fuel level
+    displayScore();
   }
 
   // Method to take damage
@@ -138,7 +153,7 @@ class Tank {
     float turretEndX = x + 40 * cos(turretAngle); // Adjust for your turret's length
     float turretEndY = y + 40 * sin(turretAngle);
     float power = 10;  // Adjust power as necessary
-    projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power));
+    projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power,id));
   }
 
   
