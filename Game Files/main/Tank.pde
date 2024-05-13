@@ -49,15 +49,21 @@ class Tank {
   int lastUpdateTime; // Time of the last update
   int maxHealth;
   int currentHealth;
+  int id;
 
-  Tank(float x, float y, int[] tankColor, int maxHealth) {
+  Tank(float x, float y, int[] tankColor, int maxHealth, int _id) {
+    this.id = _id;
     this.x = x;
     this.y = y;
     this.tankColor = tankColor;
     this.maxHealth = maxHealth;
     this.currentHealth = maxHealth;
-    this.turretAngle = -PI/2;
+    this.turretAngle = 3*PI/2;
     this.lastUpdateTime = millis();
+  }
+  
+  int getId(){
+    return id;
   }
 
   // Method to control turret movement
@@ -122,23 +128,22 @@ class Tank {
 
 
   void move(int keyCode) {
-    float turretAngleChange = 3 * PI; // Radians per second for turret movement
-    float tankMoveSpeed = 60; // Pixels per second for tank movement
+    float turretAngleChange = 3 * PI;
+    float tankMoveSpeed = 60;
 
-    int currentTime = millis();
-    float elapsedTime = (currentTime - lastUpdateTime) / 1000.0; // Convert to seconds
+    float perFrameRate = 1/frameRate;
 
-    turretAngleChange = turretAngleChange / elapsedTime;
-    tankMoveSpeed = tankMoveSpeed / elapsedTime;
+    turretAngleChange = turretAngleChange * perFrameRate;
+    tankMoveSpeed = tankMoveSpeed * perFrameRate;
 
     if (keyCode == UP) {
       controlTurret(turretAngleChange); // Move turret up
     } else if (keyCode == DOWN) {
       controlTurret(-turretAngleChange); // Move turret down
     } else if (keyCode == LEFT) {
-      x -= tankMoveSpeed * elapsedTime; // Move tank left
+      x -= tankMoveSpeed ; // Move tank left
     } else if (keyCode == RIGHT) {
-      x += tankMoveSpeed * elapsedTime; // Move tank right
+      x += tankMoveSpeed ; // Move tank right
     }
   }
 }

@@ -3,11 +3,15 @@ PImage treeImage;
 JSONObject config;
 int tileSize;
 int[] foregroundColour;
+int players;
 String[] layoutLines; // Declare layoutLines as a global variable
 
-ArrayList<Tank> tanks= new ArrayList<Tank>();
+Tank[] tanks;
+
+int turn ;
 
 void setup() {
+  turn = 0;
   // Load the JSON configuration file
   config = loadJSONObject("config.json");
   
@@ -16,6 +20,9 @@ void setup() {
   
   // Load only the first level
   JSONObject firstLevel = levels.getJSONObject(0);
+  
+  //Hardcoding players with 5
+  players = 0;
   
   // Extract information for the first level
   String layoutFileName = firstLevel.getString("layout");
@@ -39,8 +46,10 @@ void setup() {
   // Draw the background image
   image(backgroundImage, 0, 0, width, height);
   
-  // Initialize tanks ArrayList
-  tanks = new ArrayList<Tank>();
+  countPlayers();
+  
+  tanks = new Tank[players];
+  
   
   float tileSize = 32;
   
@@ -55,39 +64,30 @@ void setup() {
       // Draw based on tile type
       switch(tile) {
         case 'A':
-          // Draw starting position for human players
-          int[] blueColor = {0, 0, 255}; // Blue color
-          tanks.add(new Tank(x, y, blueColor, 100));
+          int[] blueColor = {0, 0, 255};
+          tanks[0]= new Tank(x, y, blueColor, 100,0);
           break;
         case 'B':
-          // Draw starting position for human players
-          int[] redColor = {255, 0, 0}; // Red color
-          tanks.add(new Tank(x, y, redColor, 100));
+          int[] redColor = {255, 0, 0}; 
+
+          tanks[1]= new Tank(x, y, redColor, 100,1);
           break;
         case 'C':
-          // Draw starting position for human players
-          int[] cyanColor = {0, 255, 255}; // Cyan color
-          tanks.add(new Tank(x, y, cyanColor, 100));
+          int[] cyanColor = {0, 255, 255};
+          tanks[2] = new Tank(x, y, cyanColor, 100,2);
           break;
         case 'D':
-          // Draw starting position for human players
-          int[] yellowColor = {255, 255, 0}; // Yellow color
-          tanks.add(new Tank(x, y, yellowColor, 100));
+          int[] yellowColor = {255, 255, 0};
+          tanks[3] = new Tank(x, y, yellowColor, 100,3);
           break;
         case 'E':
-          // Draw starting position for human players
-          int[] greenColor = {0, 255, 0}; // Green color
-          tanks.add(new Tank(x , y , greenColor, 100));
+          int[] greenColor = {0, 255, 0}; 
+          tanks[4] = new Tank(x , y , greenColor, 100,4);
           break;
-        case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-          // Draw starting position for AI players
-          fill(0, 255, 0); // Green color for AI players
-          ellipse(x , y , tileSize/2, tileSize/2); // Draw a circle representing player
-          break;
+
         case 'T':
           // Draw trees
           float treeSize = tileSize * 1.1;
-          // Draw tree image with calculated size
           image(treeImage, x, y, treeSize, treeSize);
           break;
         case ' ': // Ignore spaces
@@ -98,10 +98,15 @@ void setup() {
       }
     }
   }
+  
+  
 }
 
 
+
+
 void draw() {
+  
   // Clear the background
   background(0);
 
@@ -135,10 +140,13 @@ void draw() {
   }
 
   // Display tanks and their health bars
-  for (Tank tank : tanks) {
-    tank.display();
+  for (int i=0; i<players ;i++) {
+    tanks[i].display();
+  
   }
+  
 }
+
 
 
 void showTerrain(){
@@ -193,7 +201,6 @@ void showTerrain(){
   float curveThresh = 4;
   
   
-  
   for (int i = 0; i < xCoordinates.length; i++) {
 
     float x1,y1,x2,y2,x3,y3,x4,y4;  
@@ -243,6 +250,31 @@ void showTerrain(){
 
 }
 
+void countPlayers(){
+  // Display the contents of the layout file
+  for (int i = 0; i < layoutLines.length; i++) {
+    String line = layoutLines[i];
+    for (int j = 0; j < line.length(); j++) {
+      char tile = line.charAt(j);
+      float x = j * tileSize;
+      float y = i * tileSize;
+      
+      // Draw based on tile type
+      switch(tile) {
+        case 'A':case'B':case'C':case'D':case'E':case'F':case'G':case'H':case'I':
+          players++;
+          break;
+    }
+
+
+    }
+  }
+
+
+
+
+}
+
 
 int[] parseColour(String colourString) {
   // Parse the colour string to extract RGB values
@@ -257,10 +289,11 @@ int[] parseColour(String colourString) {
 
 void keyPressed() {
   // Pass the key code to the controlTank method of each Tank object
-  for (Tank tank : tanks) {
-    tank.move(keyCode);
-    
-    
-    
+  if(keyCode == 32)
+  {
+    //Implement Shooting Here
+    turn = (turn+1)%players;
   }
+  tanks[turn].move(keyCode);
+  
 }
