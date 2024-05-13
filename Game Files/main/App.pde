@@ -97,6 +97,7 @@ void checkCollisions() {
         for (Tank t : tanks) {
             if (dist(p.x, p.y, t.x, t.y) < 20) { // Assuming radius of impact
                 t.takeDamage(20);  // Damage the tank
+                t.incrementScore();
                 p.active = false;  // Deactivate the projectile
             }
         }

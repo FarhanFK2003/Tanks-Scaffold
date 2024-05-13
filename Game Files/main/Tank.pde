@@ -125,6 +125,7 @@ class Tank {
 
     displayHealth();
     displayFuel(); // Display the current fuel level
+    displayScore();
   }
 
   // Method to take damage
@@ -152,7 +153,7 @@ class Tank {
     float turretEndX = x + 40 * cos(turretAngle); // Adjust for your turret's length
     float turretEndY = y + 40 * sin(turretAngle);
     float power = 10;  // Adjust power as necessary
-    projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power));
+    projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power,id));
   }
 
   

@@ -1,13 +1,16 @@
 class Projectile {
     float x, y, vx, vy;
+    int shooterId;  // ID of the tank that shot this projectile
     boolean active;
 
-    Projectile(float x, float y, float angle, float power) {
+    // Constructor updated to include shooterId
+    Projectile(float x, float y, float angle, float power, int shooterId) {
         this.x = x;
         this.y = y;
         this.vx = power * cos(angle);
         this.vy = power * sin(angle);
         this.active = true;
+        this.shooterId = shooterId;  // Store the ID of the shooter
     }
 
     void update() {
