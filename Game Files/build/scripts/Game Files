@@ -210,7 +210,7 @@ DEFAULT_JVM_OPTS=""
 
 set -- \
         -classpath "$CLASSPATH" \
-        Tanks.App \
+        App.app \
         "$@"
 
 # Stop when "xargs" is not available.

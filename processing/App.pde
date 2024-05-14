@@ -15,7 +15,7 @@ ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 void setup() {
   turn = 0;
 
-  config = loadJSONObject("config.json");
+  config = loadJSONObject("data/config.json");
   
   
   JSONArray levels = config.getJSONArray("levels");
@@ -26,7 +26,7 @@ void setup() {
   players = 0;
   
   String layoutFileName = firstLevel.getString("layout");
-  String backgroundFileName = "resources/"+firstLevel.getString("background");
+  String backgroundFileName = "data/"+firstLevel.getString("background");
   foregroundColour = parseColour(firstLevel.getString("foreground-colour"));
   
   
@@ -34,7 +34,7 @@ void setup() {
   
   backgroundImage = loadImage(backgroundFileName);
   
-  treeImage = loadImage("resources/tree2.png");
+  treeImage = loadImage("data/tree2.png");
   
   size(864, 640);
   
@@ -97,7 +97,7 @@ void checkCollisions() {
         for (Tank t : tanks) {
             if (dist(p.x, p.y, t.x, t.y) < 25) { // Assuming radius of impact
                 t.takeDamage(20);  // Damage the tank
-                t.incrementScore();
+                tanks[p.shooterId].incrementScore();
                 p.active = false;  // Deactivate the projectile
             }
         }

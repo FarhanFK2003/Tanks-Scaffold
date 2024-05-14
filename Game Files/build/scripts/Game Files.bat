@@ -72,7 +72,7 @@ set CLASSPATH=%APP_HOME%\lib\Game Files-1.0.jar;%APP_HOME%\lib\guava-28.0-jre.ja
 
 
 @rem Execute Game Files
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GAME_FILES_OPTS%  -classpath "%CLASSPATH%" Tanks.App %*
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GAME_FILES_OPTS%  -classpath "%CLASSPATH%" App.app %*
 
 :end
 @rem End local scope for the variables with windows NT shell

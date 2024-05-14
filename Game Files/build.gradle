@@ -1,0 +1,31 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Replace the processing-core dependency with the local JAR file
+    implementation fileTree(dir: 'lib', include: ['*.jar'])  // assuming core.jar is in the 'libs' folder
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources','data']
+        }
+    }
+}
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes 'Main-Class': 'App'
+    }
+}
