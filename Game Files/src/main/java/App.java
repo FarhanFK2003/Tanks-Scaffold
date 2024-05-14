@@ -29,6 +29,7 @@ public class App extends PApplet {
 
     Tank[] tanks;
     int turn;
+    int wind;
     ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
     public void settings() {
@@ -36,6 +37,8 @@ public class App extends PApplet {
     }
 
     public void setup() {
+        initializeWind();
+
         turn = 0;
 
         deadplayers = new ArrayList<>();
@@ -104,6 +107,104 @@ public class App extends PApplet {
                         float treeSize = tileSize * 1.1f;
                         image(treeImage, x, y, treeSize, treeSize);
                         break;
+                }
+            }
+        }
+    }
+
+    public void draw() {
+        background(0);
+        image(backgroundImage, 0, 0, width, height);
+
+        showTerrain();
+
+        for (int i = 0; i < players; i++) {
+            tanks[i].display(this);
+        }
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile p = projectiles.get(i);
+            p.update();
+            p.display(this);
+            if (!p.active) {
+                projectiles.remove(i);
+            }
+        }
+        checkCollisions();
+        displayHealthBar();
+//        displayWind();
+    }
+
+    void displayHealthBar() {
+        int barWidth = 100; // Width of the health bar
+        int barHeight = 20; // Height of the health bar, increased for better visibility
+        int margin = 10; // Margin from the top of the window
+        int barXPosition = width - (margin + barWidth + 200); // Position on the top right
+        int barYPosition = margin; // Always at the same position, just under the top margin
+
+        textSize(12); // Set the text size
+        fill(255); // White color for text
+
+        // Draw the label "Health:"
+        text("Health:", barXPosition - 55, barYPosition + 15); // Adjust position as needed
+
+        if (!deadplayers.contains(tanks[turn].id)) {
+            int health = tanks[turn].currentHealth;
+
+            fill(255, 255, 255); // Background color of the health bar (white)
+            rect(barXPosition, barYPosition, barWidth, barHeight);
+
+            fill(0, 0, 255); // Health color (blue)
+            rect(barXPosition, barYPosition, (health / 100.0f) * barWidth, barHeight); // Adjust width according to health percentage
+
+            // Draw the numerical health value
+            text(health, barXPosition + barWidth + 5, barYPosition + 15);
+        }
+    }
+
+    void initializeWind() {
+        wind = (int) random(-35, 36); // Initialize wind with a random value between -35 and 35
+    }
+
+    void updateWind() {
+        wind += (int) random(-5, 6); // Change wind by a random value between -5 and 5
+        wind = constrain(wind, -35, 35); // Keep wind within the -35 to 35 range
+    }
+
+    void displayWind() {
+        textSize(12);
+        fill(255);
+        text("Wind: " + wind, width - 100, 30); // Display wind value
+
+        if (wind > 0) {
+            image(loadImage("wind-right.png"), width - 130, 20); // Display right wind icon
+        } else if (wind < 0) {
+            image(loadImage("wind-left.png"), width - 130, 20); // Display left wind icon
+        }
+    }
+
+
+    void showTerrain(){
+
+        tileSize = 32;
+
+
+        float[] xCoordinates = new float[28];
+        float[] yCoordinates = new float[28];
+        int xIndex = 0;
+        int yIndex = 0;
+
+
+
+
+        for (int i = 0; i < layoutLines.length; i++) {
+            String line = layoutLines[i];
+            for (int j = 0; j < line.length(); j++) {
+                char tile = line.charAt(j);
+                float x = j * tileSize;
+                float y = i * tileSize ;
+
+                // Draw based on tile type
+                switch(tile) {
                     case 'X':
                         xCoordinates[xIndex++] = x;
                         yCoordinates[yIndex++] = y;
@@ -305,6 +406,7 @@ public class App extends PApplet {
             }
         }
         tanks[turn].move(keyCode,this);
+        updateWind();
     }
 
     public static void main(String[] args) {
