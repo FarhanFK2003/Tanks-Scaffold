@@ -11,7 +11,6 @@ import java.util.List;
 
 
 public class App extends PApplet {
-
     PImage backgroundImage;
     PImage treeImage;
     JSONObject config;
@@ -21,6 +20,11 @@ public class App extends PApplet {
     String[] layoutLines;
 
     List<Integer> deadplayers ;
+
+    // Our lines
+    float[] linesX = new float[924];
+    float[] linesY = new float[924];
+
 
     Tank[] tanks;
     int turn;
@@ -33,7 +37,6 @@ public class App extends PApplet {
 
     public void setup() {
         initializeWind();
-
         turn = 0;
 
         deadplayers = new ArrayList<>();
@@ -59,6 +62,16 @@ public class App extends PApplet {
         tanks = new Tank[players];
 
         tileSize = 32;
+
+        float[] xCoordinates = new float[28];
+        float[] yCoordinates = new float[28];
+
+
+        int xIndex = 0;
+        int yIndex = 0;
+
+
+
 
         for (int i = 0; i < layoutLines.length; i++) {
             String line = layoutLines[i];
@@ -88,12 +101,78 @@ public class App extends PApplet {
                         int[] greenColor = {0, 255, 0};
                         tanks[4] = new Tank(x, y, greenColor, 100, 4,projectiles);
                         break;
+                    case 'X':
+                        xCoordinates[xIndex++] = x;
+                        yCoordinates[yIndex++] = y;
+                        break;
                     case 'T':
-                        float treeSize = tileSize * 1.1f;
+                        float treeSize = tileSize * (float)1.1;
                         image(treeImage, x, y, treeSize, treeSize);
                         break;
                 }
             }
+
+        }
+
+
+
+        for (int i = 0; i < xIndex - 1; i++) {
+            for (int j = 0; j < xIndex - i - 1; j++) {
+                if (xCoordinates[j] > xCoordinates[j + 1]) {
+                    float tempX = xCoordinates[j];
+                    xCoordinates[j] = xCoordinates[j + 1];
+                    xCoordinates[j + 1] = tempX;
+
+                    float tempY = yCoordinates[j];
+                    yCoordinates[j] = yCoordinates[j + 1];
+                    yCoordinates[j + 1] = tempY;
+                }
+            }
+        }
+
+        for (int i = 0; i < xCoordinates.length; i++) {
+
+            float x1,y1,x2,y2,x3,y3,x4,y4;
+            if( i == 0){
+                x1 = xCoordinates[i];
+                y1 = yCoordinates[i]-16;
+                x4= xCoordinates[i]+16;
+                y4 = yCoordinates[i];
+
+            }
+            else{
+                x1 = xCoordinates[i-1]+16;
+                y1 = yCoordinates[i-1];
+
+                x4= xCoordinates[i]+16;
+                y4 = yCoordinates[i];
+
+            }
+
+            float t = (float)0.0;
+
+            float midX = (x1+x4)/2;
+
+            x2 =x3 = midX;
+            y2 = y1;
+            y3 = y4;
+
+
+            float k,l;
+            k = x1;
+            for(int count = 0;  count <= 32; count++){
+
+                float tt = 1-t;
+
+                k++;
+                l = pow(tt,3)*y1+3*t*pow(tt,2)*y2+3*pow(t,2)*tt*y3+t*t*t*y4;
+
+                t+=0.03125;
+
+                linesX[i*32+count] = k;
+                linesY[i*32+count] = l;
+            }
+
         }
     }
 
@@ -108,7 +187,7 @@ public class App extends PApplet {
         }
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile p = projectiles.get(i);
-            p.update();
+            p.update(wind);
             p.display(this);
             if (!p.active) {
                 projectiles.remove(i);
@@ -116,7 +195,7 @@ public class App extends PApplet {
         }
         checkCollisions();
         displayHealthBar();
-//        displayWind();
+        displayWind();
     }
 
     void displayHealthBar() {
@@ -159,113 +238,23 @@ public class App extends PApplet {
         textSize(12);
         fill(255);
         text("Wind: " + wind, width - 100, 30); // Display wind value
-
+        int iconWidth = 50;  // Set the desired width of the icons
+        int iconHeight = 30; // Set the desired height of the icons
         if (wind > 0) {
-            image(loadImage("wind-right.png"), width - 130, 20); // Display right wind icon
+            image(loadImage("wind-right.png"), width - 150, 20,iconWidth,iconHeight); // Display right wind icon
         } else if (wind < 0) {
-            image(loadImage("wind-left.png"), width - 130, 20); // Display left wind icon
+            image(loadImage("wind-left.png"), width - 150, 20,iconWidth,iconHeight); // Display left wind icon
         }
     }
 
 
+
     void showTerrain(){
 
-        tileSize = 32;
-
-
-        float[] xCoordinates = new float[28];
-        float[] yCoordinates = new float[28];
-        int xIndex = 0;
-        int yIndex = 0;
-
-
-
-
-        for (int i = 0; i < layoutLines.length; i++) {
-            String line = layoutLines[i];
-            for (int j = 0; j < line.length(); j++) {
-                char tile = line.charAt(j);
-                float x = j * tileSize;
-                float y = i * tileSize ;
-
-                // Draw based on tile type
-                switch(tile) {
-                    case 'X':
-                        xCoordinates[xIndex++] = x;
-                        yCoordinates[yIndex++] = y;
-                        break;
-                    case 'T':
-                        float treeSize = tileSize * (float)1.1;
-                        image(treeImage, x, y, treeSize, treeSize);
-                        break;
-
-                }
-            }
+        for (int i =0 ; i< linesX.length;i++){
+            stroke(foregroundColour[0], foregroundColour[1], foregroundColour[2]);
+            line(linesX[i], linesY[i], linesX[i], height);
         }
-
-        for (int i = 0; i < xIndex - 1; i++) {
-            for (int j = 0; j < xIndex - i - 1; j++) {
-                if (xCoordinates[j] > xCoordinates[j + 1]) {
-                    float tempX = xCoordinates[j];
-                    xCoordinates[j] = xCoordinates[j + 1];
-                    xCoordinates[j + 1] = tempX;
-
-                    float tempY = yCoordinates[j];
-                    yCoordinates[j] = yCoordinates[j + 1];
-                    yCoordinates[j + 1] = tempY;
-                }
-            }
-        }
-
-        float curveThresh = 4;
-
-
-        for (int i = 0; i < xCoordinates.length; i++) {
-
-            float x1,y1,x2,y2,x3,y3,x4,y4;
-            if( i == 0){
-                x1 = xCoordinates[i];
-                y1 = yCoordinates[i]-16;
-                x4= xCoordinates[i]+16;
-                y4 = yCoordinates[i];
-
-            }
-            else{
-                x1 = xCoordinates[i-1]+16;
-                y1 = yCoordinates[i-1];
-
-                x4= xCoordinates[i]+16;
-                y4 = yCoordinates[i];
-
-            }
-
-            float t = (float)0.0;
-
-            float midX = (x1+x4)/2;
-
-            x2 =x3 = midX;
-            y2 = y1;
-            y3 = y4;
-
-
-            float k,l;
-            k = x1;
-            for(int count = 0;  count <= 32; count++){
-
-                float tt = 1-t;
-
-                k++;
-                l = pow(tt,3)*y1+3*t*pow(tt,2)*y2+3*pow(t,2)*tt*y3+t*t*t*y4;
-
-                t+=0.03125;
-
-
-                stroke(foregroundColour[0], foregroundColour[1], foregroundColour[2]);
-                line(k, l, k, height);
-            }
-
-        }
-
     }
 
     void countPlayers() {
@@ -293,8 +282,10 @@ public class App extends PApplet {
                 if(!deadplayers.contains(t.id)){
                     if (p.active && checkPointSquareCollision(p.x, p.y, t.x, t.y,32) ) { // Assuming radius of impact
                         t.takeDamage(20);  // Damage the tank
-                        tanks[p.shooterId].incrementScore();
+                        if(p.shooterId != t.id)
+                            tanks[p.shooterId].incrementScore();
                         p.active = false;  // Deactivate the projectile
+                        break;
                     }
                     if(t.currentHealth <= 0){
                         deadplayers.add(t.id);
@@ -305,6 +296,8 @@ public class App extends PApplet {
             }
 
         }
+
+
     }
 
     boolean checkPointSquareCollision(float pX, float pY, float tX, float tY, float width){
@@ -328,20 +321,26 @@ public class App extends PApplet {
         if (keyCode == 32) {
             tanks[turn].fire(this);
             turn = (turn + 1) % players;
-            for (Integer t : deadplayers){
-                if(turn == t)
+            updateWind();
+            for (int i = 0 ; i < players; i++){
+                if(deadplayers.contains(i)){
                     turn = (turn + 1) % players;
+
+                }
                 else
                     break;
             }
+            println(deadplayers);
         }
         tanks[turn].move(keyCode,this);
+
         updateWind();
 
         if(key == 'r' || key == 'R')
         {
             restartLevel();
         }
+
     }
 
     void restartLevel() {
