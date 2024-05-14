@@ -11,7 +11,6 @@ import java.util.List;
 
 
 public class App extends PApplet {
-
     PImage backgroundImage;
     PImage treeImage;
     JSONObject config;
@@ -38,7 +37,6 @@ public class App extends PApplet {
 
     public void setup() {
         initializeWind();
-
         turn = 0;
 
         deadplayers = new ArrayList<>();
@@ -189,7 +187,7 @@ public class App extends PApplet {
         }
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile p = projectiles.get(i);
-            p.update();
+            p.update(wind);
             p.display(this);
             if (!p.active) {
                 projectiles.remove(i);
@@ -197,7 +195,7 @@ public class App extends PApplet {
         }
         checkCollisions();
         displayHealthBar();
-//        displayWind();
+        displayWind();
     }
 
     void displayHealthBar() {
@@ -240,13 +238,15 @@ public class App extends PApplet {
         textSize(12);
         fill(255);
         text("Wind: " + wind, width - 100, 30); // Display wind value
-
+        int iconWidth = 50;  // Set the desired width of the icons
+        int iconHeight = 30; // Set the desired height of the icons
         if (wind > 0) {
-            image(loadImage("wind-right.png"), width - 130, 20); // Display right wind icon
+            image(loadImage("wind-right.png"), width - 150, 20,iconWidth,iconHeight); // Display right wind icon
         } else if (wind < 0) {
-            image(loadImage("wind-left.png"), width - 130, 20); // Display left wind icon
+            image(loadImage("wind-left.png"), width - 150, 20,iconWidth,iconHeight); // Display left wind icon
         }
     }
+
 
 
     void showTerrain(){
