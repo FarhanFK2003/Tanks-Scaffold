@@ -322,15 +322,16 @@ public class App extends PApplet {
             tanks[turn].fire(this);
             turn = (turn + 1) % players;
             for (int i = 0 ; i < players; i++){
-                if(deadplayers.contains(i))
+                if(deadplayers.contains(i)){
                     turn = (turn + 1) % players;
+                    updateWind();
+                }
                 else
                     break;
             }
             println(deadplayers);
         }
         tanks[turn].move(keyCode,this);
-        updateWind();
     }
 
     public static void main(String[] args) {
