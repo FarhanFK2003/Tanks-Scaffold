@@ -103,7 +103,7 @@ public class Tank {
         projectiles.add(new Projectile(turretEndX, turretEndY, turretAngle, power, id,parent.width,parent.height));
     }
 
-    void move(int keyCode,PApplet parent) {
+    void move(int keyCode, PApplet parent) {
         float turretAngleChange = 3 * PApplet.PI;
         float tankMoveSpeed = 60;
         float fuelConsumptionPerMove = 0.5f; // Amount of fuel consumed per movement action
@@ -117,6 +117,10 @@ public class Tank {
             return; // Stop movement if there's no fuel left
         }
 
+        // Store the current position for boundary checking
+        float prevX = x;
+        float nextX = x - 32;
+
         if (keyCode == PApplet.UP) {
             controlTurret(-turretAngleChange);
         } else if (keyCode == PApplet.DOWN) {
@@ -127,6 +131,13 @@ public class Tank {
         } else if (keyCode == PApplet.RIGHT) {
             x += tankMoveSpeed; // Move tank right
             fuel -= fuelConsumptionPerMove;
+        }
+
+        // Check if tank is within screen bounds
+        if (x < 0 || x > parent.width || x > parent.width - 32) {
+            // Reset tank position to previous position
+            x = prevX;
+            x = nextX;
         }
 
         if (fuel < 0) {

@@ -337,8 +337,20 @@ public class App extends PApplet {
         }
         tanks[turn].move(keyCode,this);
         updateWind();
+
+        if(key == 'r' || key == 'R')
+        {
+            restartLevel();
+        }
     }
 
+    void restartLevel() {
+        // Clear the projectiles list
+        projectiles.clear();
+        // Reload the level
+        setup();
+        redraw();
+    }
     public static void main(String[] args) {
         PApplet.main("App");
     }
