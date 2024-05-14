@@ -22,6 +22,11 @@ public class App extends PApplet {
 
     List<Integer> deadplayers ;
 
+    // Our lines
+    float[] linesX = new float[28];
+    float[] linesY = new float[28];
+
+
     Tank[] tanks;
     int turn;
     ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -57,6 +62,16 @@ public class App extends PApplet {
 
         tileSize = 32;
 
+        float[] xCoordinates = new float[28];
+        float[] yCoordinates = new float[28];
+
+
+        int xIndex = 0;
+        int yIndex = 0;
+
+
+
+
         for (int i = 0; i < layoutLines.length; i++) {
             String line = layoutLines[i];
             for (int j = 0; j < line.length(); j++) {
@@ -89,54 +104,6 @@ public class App extends PApplet {
                         float treeSize = tileSize * 1.1f;
                         image(treeImage, x, y, treeSize, treeSize);
                         break;
-                }
-            }
-        }
-    }
-
-    public void draw() {
-        background(0);
-        image(backgroundImage, 0, 0, width, height);
-
-        showTerrain();
-
-        for (int i = 0; i < players; i++) {
-            tanks[i].display(this);
-        }
-        for (int i = projectiles.size() - 1; i >= 0; i--) {
-            Projectile p = projectiles.get(i);
-            p.update();
-            p.display(this);
-            if (!p.active) {
-                projectiles.remove(i);
-            }
-        }
-        checkCollisions();
-    }
-
-
-    void showTerrain(){
-
-        tileSize = 32;
-
-
-        float[] xCoordinates = new float[28];
-        float[] yCoordinates = new float[28];
-        int xIndex = 0;
-        int yIndex = 0;
-
-
-
-
-        for (int i = 0; i < layoutLines.length; i++) {
-            String line = layoutLines[i];
-            for (int j = 0; j < line.length(); j++) {
-                char tile = line.charAt(j);
-                float x = j * tileSize;
-                float y = i * tileSize ;
-
-                // Draw based on tile type
-                switch(tile) {
                     case 'X':
                         xCoordinates[xIndex++] = x;
                         yCoordinates[yIndex++] = y;
@@ -145,10 +112,11 @@ public class App extends PApplet {
                         float treeSize = tileSize * (float)1.1;
                         image(treeImage, x, y, treeSize, treeSize);
                         break;
-
                 }
             }
         }
+
+
 
         for (int i = 0; i < xIndex - 1; i++) {
             for (int j = 0; j < xIndex - i - 1; j++) {
@@ -212,6 +180,44 @@ public class App extends PApplet {
             }
 
         }
+    }
+
+    public void draw() {
+        background(0);
+        image(backgroundImage, 0, 0, width, height);
+
+        showTerrain();
+
+        for (int i = 0; i < players; i++) {
+            tanks[i].display(this);
+        }
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile p = projectiles.get(i);
+            p.update();
+            p.display(this);
+            if (!p.active) {
+                projectiles.remove(i);
+            }
+        }
+        checkCollisions();
+    }
+
+
+    void showTerrain(){
+
+
+        for (int i = 0; i < layoutLines.length; i++) {
+            String line = layoutLines[i];
+            for (int j = 0; j < line.length(); j++) {
+                char tile = line.charAt(j);
+                float x = j * tileSize;
+                float y = i * tileSize ;
+
+
+            }
+        }
+
+
 
     }
 
@@ -240,8 +246,11 @@ public class App extends PApplet {
                 if(!deadplayers.contains(t.id)){
                     if (p.active && checkPointSquareCollision(p.x, p.y, t.x, t.y,32) ) { // Assuming radius of impact
                         t.takeDamage(20);  // Damage the tank
-                        tanks[p.shooterId].incrementScore();
+                        if(p.shooterId != t.id)
+                            tanks[p.shooterId].incrementScore();
                         p.active = false;  // Deactivate the projectile
+                        projectiles.remove(p);
+                        break;
                     }
                     if(t.currentHealth <= 0){
                         deadplayers.add(t.id);
@@ -249,6 +258,19 @@ public class App extends PApplet {
 
                 }
 
+            }
+
+        }
+
+        for (Projectile p : projectiles) {
+            if (!p.active) {
+                projectiles.remove(p);
+                continue;
+            }
+            for (int i =0 ;i < 28;i++) {
+                for (int j= 0; j< 32;j++){
+
+                }
             }
 
         }
