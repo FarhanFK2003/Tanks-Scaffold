@@ -18,12 +18,12 @@ public class Projectile {
         this.screenHeight = screenHeight;
     }
 
-    void update() {
+    void update(int wind) {
         if (!active)
             return;
 
         // Calculate wind effect as a horizontal acceleration
-        float windEffect = 1 * 0.03f; // Assuming 'wind' is accessible here; if not, pass it as a parameter
+        float windEffect = wind * 0.03f; // Assuming 'wind' is accessible here; if not, pass it as a parameter
 
         vx += windEffect; // Apply wind effect to horizontal velocity
         vy += 0.2; // Continue applying gravity
