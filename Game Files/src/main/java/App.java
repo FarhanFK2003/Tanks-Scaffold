@@ -23,8 +23,8 @@ public class App extends PApplet {
     List<Integer> deadplayers ;
 
     // Our lines
-    float[] linesX = new float[28];
-    float[] linesY = new float[28];
+    float[] linesX = new float[924];
+    float[] linesY = new float[924];
 
 
     Tank[] tanks;
@@ -103,12 +103,78 @@ public class App extends PApplet {
                         int[] greenColor = {0, 255, 0};
                         tanks[4] = new Tank(x, y, greenColor, 100, 4,projectiles);
                         break;
+                    case 'X':
+                        xCoordinates[xIndex++] = x;
+                        yCoordinates[yIndex++] = y;
+                        break;
                     case 'T':
-                        float treeSize = tileSize * 1.1f;
+                        float treeSize = tileSize * (float)1.1;
                         image(treeImage, x, y, treeSize, treeSize);
                         break;
                 }
             }
+
+        }
+
+
+
+        for (int i = 0; i < xIndex - 1; i++) {
+            for (int j = 0; j < xIndex - i - 1; j++) {
+                if (xCoordinates[j] > xCoordinates[j + 1]) {
+                    float tempX = xCoordinates[j];
+                    xCoordinates[j] = xCoordinates[j + 1];
+                    xCoordinates[j + 1] = tempX;
+
+                    float tempY = yCoordinates[j];
+                    yCoordinates[j] = yCoordinates[j + 1];
+                    yCoordinates[j + 1] = tempY;
+                }
+            }
+        }
+
+        for (int i = 0; i < xCoordinates.length; i++) {
+
+            float x1,y1,x2,y2,x3,y3,x4,y4;
+            if( i == 0){
+                x1 = xCoordinates[i];
+                y1 = yCoordinates[i]-16;
+                x4= xCoordinates[i]+16;
+                y4 = yCoordinates[i];
+
+            }
+            else{
+                x1 = xCoordinates[i-1]+16;
+                y1 = yCoordinates[i-1];
+
+                x4= xCoordinates[i]+16;
+                y4 = yCoordinates[i];
+
+            }
+
+            float t = (float)0.0;
+
+            float midX = (x1+x4)/2;
+
+            x2 =x3 = midX;
+            y2 = y1;
+            y3 = y4;
+
+
+            float k,l;
+            k = x1;
+            for(int count = 0;  count <= 32; count++){
+
+                float tt = 1-t;
+
+                k++;
+                l = pow(tt,3)*y1+3*t*pow(tt,2)*y2+3*pow(t,2)*tt*y3+t*t*t*y4;
+
+                t+=0.03125;
+
+                linesX[i*32+count] = k;
+                linesY[i*32+count] = l;
+            }
+
         }
     }
 
@@ -185,141 +251,10 @@ public class App extends PApplet {
 
     void showTerrain(){
 
-        tileSize = 32;
-
-
-        float[] xCoordinates = new float[28];
-        float[] yCoordinates = new float[28];
-        int xIndex = 0;
-        int yIndex = 0;
-
-
-
-
-        for (int i = 0; i < layoutLines.length; i++) {
-            String line = layoutLines[i];
-            for (int j = 0; j < line.length(); j++) {
-                char tile = line.charAt(j);
-                float x = j * tileSize;
-                float y = i * tileSize ;
-
-                // Draw based on tile type
-                switch(tile) {
-                    case 'X':
-                        xCoordinates[xIndex++] = x;
-                        yCoordinates[yIndex++] = y;
-                        break;
-                    case 'T':
-                        float treeSize = tileSize * (float)1.1;
-                        image(treeImage, x, y, treeSize, treeSize);
-                        break;
-                }
-            }
+        for (int i =0 ; i< linesX.length;i++){
+            stroke(foregroundColour[0], foregroundColour[1], foregroundColour[2]);
+            line(linesX[i], linesY[i], linesX[i], height);
         }
-
-
-
-        for (int i = 0; i < xIndex - 1; i++) {
-            for (int j = 0; j < xIndex - i - 1; j++) {
-                if (xCoordinates[j] > xCoordinates[j + 1]) {
-                    float tempX = xCoordinates[j];
-                    xCoordinates[j] = xCoordinates[j + 1];
-                    xCoordinates[j + 1] = tempX;
-
-                    float tempY = yCoordinates[j];
-                    yCoordinates[j] = yCoordinates[j + 1];
-                    yCoordinates[j + 1] = tempY;
-                }
-            }
-        }
-
-        float curveThresh = 4;
-
-
-        for (int i = 0; i < xCoordinates.length; i++) {
-
-            float x1,y1,x2,y2,x3,y3,x4,y4;
-            if( i == 0){
-                x1 = xCoordinates[i];
-                y1 = yCoordinates[i]-16;
-                x4= xCoordinates[i]+16;
-                y4 = yCoordinates[i];
-
-            }
-            else{
-                x1 = xCoordinates[i-1]+16;
-                y1 = yCoordinates[i-1];
-
-                x4= xCoordinates[i]+16;
-                y4 = yCoordinates[i];
-
-            }
-
-            float t = (float)0.0;
-
-            float midX = (x1+x4)/2;
-
-            x2 =x3 = midX;
-            y2 = y1;
-            y3 = y4;
-
-
-            float k,l;
-            k = x1;
-            for(int count = 0;  count <= 32; count++){
-
-                float tt = 1-t;
-
-                k++;
-                l = pow(tt,3)*y1+3*t*pow(tt,2)*y2+3*pow(t,2)*tt*y3+t*t*t*y4;
-
-                t+=0.03125;
-
-
-                stroke(foregroundColour[0], foregroundColour[1], foregroundColour[2]);
-                line(k, l, k, height);
-            }
-
-        }
-    }
-
-    public void draw() {
-        background(0);
-        image(backgroundImage, 0, 0, width, height);
-
-        showTerrain();
-
-        for (int i = 0; i < players; i++) {
-            tanks[i].display(this);
-        }
-        for (int i = projectiles.size() - 1; i >= 0; i--) {
-            Projectile p = projectiles.get(i);
-            p.update();
-            p.display(this);
-            if (!p.active) {
-                projectiles.remove(i);
-            }
-        }
-        checkCollisions();
-    }
-
-
-    void showTerrain(){
-
-
-        for (int i = 0; i < layoutLines.length; i++) {
-            String line = layoutLines[i];
-            for (int j = 0; j < line.length(); j++) {
-                char tile = line.charAt(j);
-                float x = j * tileSize;
-                float y = i * tileSize ;
-
-
-            }
-        }
-
-
-
     }
 
     void countPlayers() {
@@ -350,7 +285,6 @@ public class App extends PApplet {
                         if(p.shooterId != t.id)
                             tanks[p.shooterId].incrementScore();
                         p.active = false;  // Deactivate the projectile
-                        projectiles.remove(p);
                         break;
                     }
                     if(t.currentHealth <= 0){
@@ -363,18 +297,7 @@ public class App extends PApplet {
 
         }
 
-        for (Projectile p : projectiles) {
-            if (!p.active) {
-                projectiles.remove(p);
-                continue;
-            }
-            for (int i =0 ;i < 28;i++) {
-                for (int j= 0; j< 32;j++){
 
-                }
-            }
-
-        }
     }
 
     boolean checkPointSquareCollision(float pX, float pY, float tX, float tY, float width){
@@ -398,12 +321,13 @@ public class App extends PApplet {
         if (keyCode == 32) {
             tanks[turn].fire(this);
             turn = (turn + 1) % players;
-            for (Integer t : deadplayers){
+            for ( t : deadplayers){
                 if(turn == t)
                     turn = (turn + 1) % players;
                 else
                     break;
             }
+            println(deadplayers);
         }
         tanks[turn].move(keyCode,this);
         updateWind();
