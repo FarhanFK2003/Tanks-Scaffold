@@ -25,6 +25,8 @@ public class App extends PApplet {
     float[] linesX = new float[924];
     float[] linesY = new float[924];
 
+    float explosion = 32;
+    float explosionRange = 2;
 
     Tank[] tanks;
     int turn;
@@ -187,7 +189,7 @@ public class App extends PApplet {
         }
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile p = projectiles.get(i);
-            p.update(wind);
+            p.update(wind,this);
             p.display(this);
             if (!p.active) {
                 projectiles.remove(i);
@@ -196,6 +198,15 @@ public class App extends PApplet {
         checkCollisions();
         displayHealthBar();
         displayWind();
+
+        for (int i = 0 ; i < deadplayers.size(); i++){
+            if(turn == deadplayers.get(i) )
+            {
+                i = -1;
+                turn = (turn + 1) % players;
+            }
+
+        }
     }
 
     void displayHealthBar() {
@@ -247,8 +258,6 @@ public class App extends PApplet {
         }
     }
 
-
-
     void showTerrain(){
 
         for (int i =0 ; i< linesX.length;i++){
@@ -294,10 +303,25 @@ public class App extends PApplet {
                 }
 
             }
+            for (int i =0 ; i < 924 ; i++){
 
+                if(p.active&& p.x <= linesX[i]+explosionRange && p.x >= linesX[i]-explosionRange && p.y >= linesY[i]){
+                    p.active = false;
+                    int xPos = p.x-explosion/2 >= 0 ? (int)(p.x-explosion/2) : 0;
+                    float yPos = p.y;
+                    int count = 0;
+                    for(int j = xPos ; j < xPos+explosion ; j++){
+                        if(linesY[j] < yPos)
+                            linesY[j] = yPos;
+                        if(count <= (int)explosion/2)
+                            yPos++;
+                        else
+                            yPos--;
+                        count++;
+                    }
+                }
+            }
         }
-
-
     }
 
     boolean checkPointSquareCollision(float pX, float pY, float tX, float tY, float width){
@@ -321,13 +345,7 @@ public class App extends PApplet {
         if (keyCode == 32) {
             tanks[turn].fire(this);
             turn = (turn + 1) % players;
-            for (int i = 0 ; i < players; i++){
-                if(deadplayers.contains(i))
-                    turn = (turn + 1) % players;
-                else
-                    break;
-            }
-            println(deadplayers);
+
         }
         tanks[turn].move(keyCode,this);
         updateWind();

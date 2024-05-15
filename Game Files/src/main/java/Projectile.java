@@ -18,15 +18,15 @@ public class Projectile {
         this.screenHeight = screenHeight;
     }
 
-    void update(int wind) {
+    void update(int wind, PApplet parent) {
         if (!active)
             return;
 
         // Calculate wind effect as a horizontal acceleration
         float windEffect = wind * 0.03f; // Assuming 'wind' is accessible here; if not, pass it as a parameter
 
-        vx += windEffect; // Apply wind effect to horizontal velocity
-        vy += 0.2; // Continue applying gravity
+        vx += 1/parent.frameRate *windEffect; // Apply wind effect to horizontal velocity
+        vy += 1/parent.frameRate* 3.6f; // Continue applying gravity
 
         x += vx;
         y += vy;
