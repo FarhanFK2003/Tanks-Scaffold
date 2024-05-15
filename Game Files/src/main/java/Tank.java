@@ -68,7 +68,6 @@ public class Tank {
             parent.rect(5, -3, 12, 6); // Turret barrel
             parent.popMatrix();
 
-            displayHealth(parent);
             displayFuel(parent); // Display the current fuel level
             displayScore(parent);
 
@@ -83,13 +82,7 @@ public class Tank {
         }
     }
 
-    // Method to display health above the tank
-    void displayHealth(PApplet parent) {
-        parent.fill(255, 0, 0); // Red background for health lost
-        parent.rect(x - 5, y + 30, 40, 5);
-        parent.fill(0, 255, 0); // Green foreground for current health
-        parent.rect(x - 5, y + 30, PApplet.map(currentHealth, 0, maxHealth, 0, 40), 5);
-    }
+
 
     // Method to check if the tank is still alive
     boolean isAlive() {

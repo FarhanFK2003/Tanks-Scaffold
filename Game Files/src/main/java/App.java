@@ -358,7 +358,7 @@ public class App extends PApplet {
         }
         tanks[turn].move(keyCode,this);
 
-        updateWind();
+
 
         if(key == 'r' || key == 'R')
         {
